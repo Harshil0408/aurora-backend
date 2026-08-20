@@ -1,0 +1,7 @@
+const { config } = require('dotenv');
+config({ path: `.env.${process.env.NODE_ENV || 'production'}` });
+
+config();
+
+const { NODE_ENV, PORT, DATABASE, DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, DATABASEHOST, APIHOSTNAME, CRYPTOJSKEY } = process.env;
+module.exports = { NODE_ENV, PORT, DATABASE, DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, DATABASEHOST, APIHOSTNAME, CRYPTOJSKEY };
