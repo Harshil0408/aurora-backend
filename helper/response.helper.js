@@ -1,4 +1,5 @@
 const { CRYPTOJSKEY } = require('../config');
+const CryptoJS = require('crypto-js');
 const { STATUS_SUCCESS, STATUS_ERROR } = require('../constants');
 
 const success = (res, data, description = '', status = STATUS_SUCCESS) => {

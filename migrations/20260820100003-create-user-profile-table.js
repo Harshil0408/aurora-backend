@@ -2,16 +2,12 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('admin_users', {
-      id: {
+    await queryInterface.createTable('user_profile', {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'users',
           key: 'u_id',
@@ -19,10 +15,25 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      admin_level: {
-        type: Sequelize.INTEGER,
+      first_name: {
+        type: Sequelize.STRING(50),
+        allowNull: true,
+        defaultValue: null,
+      },
+      last_name: {
+        type: Sequelize.STRING(50),
+        allowNull: true,
+        defaultValue: null,
+      },
+      phone: {
+        type: Sequelize.STRING(50),
         allowNull: false,
-        comment: '0 = moderator, 1 = admin, 2 = super_admin',
+        unique: true,
+      },
+      date_of_birth: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: null,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -38,6 +49,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('admin_users');
+    await queryInterface.dropTable('user_profile');
   },
 };

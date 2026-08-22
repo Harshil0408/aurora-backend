@@ -54,7 +54,7 @@ module.exports = (database) => {
       },
     },
     {
-      tableName: 'seller_users',
+      tableName: 'users',
       timestamps: false,
     }
   );

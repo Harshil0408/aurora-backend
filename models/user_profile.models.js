@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 
 module.exports = (database) => {
-  const AdminUser = database.define(
-    'admin_users',
+  const UserProfile = database.define(
+    'user_profile',
     {
       user_id: {
         type: Sequelize.INTEGER,
@@ -18,19 +18,31 @@ module.exports = (database) => {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-
-      admin_level: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        comment: '0 = moderator, 1 = admin, 2 = super_admin',
+      first_name: {
+        type: Sequelize.STRING(50),
+        allowNull: true,
+        defaultValue: null,
       },
-
+      last_name: {
+        type: Sequelize.STRING(50),
+        allowNull: true,
+        defaultValue: null,
+      },
+      phone: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+        unique: true,
+      },
+      date_of_birth: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: null,
+      },
       created_at: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
       },
-
       updated_at: {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -38,10 +50,10 @@ module.exports = (database) => {
       },
     },
     {
-      tableName: 'admin_users',
+      tableName: 'user_profile',
       timestamps: false,
     }
   );
 
-  return AdminUser;
+  return UserProfile;
 };

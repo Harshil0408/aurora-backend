@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const loadModels = require('./models/index');
 
+const authenticationRoutes = require('./modules/authentication/authentication.routes');
+
 async function start() {
   const sequelize = await getDatabase();
   loadModels(sequelize);
@@ -28,6 +30,8 @@ async function start() {
   }
 
   app.use(bodyParser.json({ limit: '1024mb' }));
+
+  app.use(authenticationRoutes);
 
   app.use(
     bodyParser.urlencoded({

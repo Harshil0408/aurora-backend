@@ -4,19 +4,17 @@ module.exports = (database) => {
   const SellerUser = database.define(
     'seller_users',
     {
-      id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+
         references: {
           model: 'users',
           key: 'u_id',
         },
+
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
