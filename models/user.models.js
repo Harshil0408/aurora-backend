@@ -17,7 +17,15 @@ module.exports = (database) => {
       },
       password_hash: {
         type: Sequelize.STRING(500),
-        allowNull: false,
+        allowNull: true,
+      },
+      google_client_id: {
+        type: Sequelize.STRING(500),
+        allowNull: true,
+      },
+      auth_token: {
+        type: Sequelize.STRING(500),
+        unique: true,
       },
       role: {
         type: Sequelize.INTEGER,

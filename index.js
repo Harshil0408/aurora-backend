@@ -7,7 +7,7 @@ const { PORT } = require('./config');
 const getDatabase = require('./database');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const loadModels = require('./models/index');
+const { loadModels } = require('./models/index');
 
 const authenticationRoutes = require('./modules/authentication/authentication.routes');
 

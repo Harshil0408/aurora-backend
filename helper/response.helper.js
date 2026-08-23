@@ -72,6 +72,8 @@ const controllerToResponse = (res, data, withOutCj = false) => {
     badRequest(res, data.data, data.description);
   } else if (data.status === 4) {
     internalServerError(res, data.description);
+  } else {
+    error(res, data.data, data.description);
   }
 };
 
