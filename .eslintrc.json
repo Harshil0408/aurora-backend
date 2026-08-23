@@ -1,0 +1,31 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "script"
+  },
+  "plugins": ["import", "node", "promise", "security", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:promise/recommended",
+    "plugin:security/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "warn",
+    "no-unused-vars": ["error", { "args": "none", "caughtErrors": "none" }],
+    "no-console": "off",
+    "eqeqeq": ["error", "smart"],
+    "prefer-const": "error",
+    "no-var": "error",
+    "import/order": "warn",
+    "security/detect-object-injection": "off",
+    "security/detect-non-literal-fs-filename": "off"
+  },
+  "ignorePatterns": ["node_modules/", "logs/", "public/"]
+}

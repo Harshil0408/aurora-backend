@@ -1,7 +1,9 @@
-const { getModels } = require('../../models/index');
-const { checkExistsOrNotFunction, insertDataFunction } = require('../common/common.controller');
-const { serviceToController } = require('../../helper/response.helper');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { getModels } = require('../../models/index');
+const { checkExistsOrNotFunction, insertDataFunction, updateDataFunction } = require('../common/common.controller');
+const { serviceToController } = require('../../helper/response.helper');
+const { JWT_EXPIRES_AT, JWT_SECRET_KEY } = require('../../config/index');
 
 const userLoginService = async (userLoginData) => {
   try {
@@ -16,9 +18,30 @@ const userLoginService = async (userLoginData) => {
     }
 
     const user = isUserExists.data;
-    if (user.password_hash !== userLoginData.bodyData.password) {
+    const isPasswordMatch = await bcrypt.compare(userLoginData.bodyData.password, user.password_hash);
+
+    if (!isPasswordMatch) {
       return serviceToController(0, null, 'Invalid email or password');
     }
+
+    const payload = {
+      u_id: user.u_id,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: JWT_EXPIRES_AT });
+
+    user.token = token;
+
+    await updateDataFunction({
+      Model: UserModel,
+      condition: { u_id: user.u_id },
+      data: { token, last_login_at: new Date().toISOString() },
+    });
+
+    delete user.password_hash;
 
     return serviceToController(1, user, 'Login successful!');
   } catch (error) {
@@ -36,7 +59,6 @@ const userRegisterService = async (userRegisterData) => {
     });
 
     if (isUserExists.status === 1) {
-      console.log('called');
       return serviceToController(0, null, 'User already exists');
     }
 

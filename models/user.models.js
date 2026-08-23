@@ -19,10 +19,6 @@ module.exports = (database) => {
         type: Sequelize.STRING(500),
         allowNull: true,
       },
-      google_client_id: {
-        type: Sequelize.STRING(500),
-        allowNull: true,
-      },
       auth_token: {
         type: Sequelize.STRING(500),
         unique: true,
@@ -44,6 +40,10 @@ module.exports = (database) => {
         allowNull: false,
         comment: '0 = not verified, 1 = verified',
         defaultValue: 0,
+      },
+      token: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       last_login_at: {
         type: 'TIMESTAMP',

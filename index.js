@@ -1,12 +1,13 @@
 const fs = require('fs');
-const cors = require('cors');
 const paths = require('path');
-const express = require('express');
 const { env } = require('process');
-const { PORT } = require('./config');
-const getDatabase = require('./database');
+const cors = require('cors');
+const express = require('express');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
+const { PORT } = require('./config');
+const getDatabase = require('./database');
 const { loadModels } = require('./models/index');
 
 const authenticationRoutes = require('./modules/authentication/authentication.routes');
@@ -17,9 +18,11 @@ async function start() {
 
   const app = express();
 
+  app.use(express.json());
   app.use(cors({ origin: true }));
   app.use(fileUpload());
   app.use(express.static('files'));
+  app.use(cookieParser());
 
   const folderPath = paths.join(__dirname, 'files');
   if (!fs.existsSync(folderPath)) {

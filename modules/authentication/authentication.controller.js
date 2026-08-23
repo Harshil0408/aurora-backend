@@ -2,13 +2,12 @@ const { logger } = require('../../utils/logger');
 
 const { validateRequestBody } = require('../../utils/validation');
 const ResponseHelper = require('../../helper/response.helper');
+const { NODE_ENV } = require('../../config/index');
 const { userLoginService, userRegisterService } = require('./authentication.service');
 
 const userLoginController = async (req, res) => {
   try {
     const userLoginData = { bodyData: req.body };
-
-    console.log('called');
 
     const validObj = {
       email: 'string',
@@ -19,6 +18,14 @@ const userLoginController = async (req, res) => {
 
     if (validation.status) {
       const data = await userLoginService(userLoginData);
+      if (data.status === 1 && data.data && data.data.token) {
+        res.cookie('accessToken', data.data.token, {
+          httpOnly: true,
+          secure: NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+      }
       return ResponseHelper.controllerToResponse(res, data);
     } else {
       return ResponseHelper.badRequest(res, validation.description);
@@ -48,7 +55,6 @@ const registerUserController = async (req, res) => {
       return ResponseHelper.badRequest(res, validation.description);
     } else {
       const data = await userRegisterService(userRegisterData);
-      console.log('data', data);
       return ResponseHelper.controllerToResponse(res, data);
     }
   } catch (error) {

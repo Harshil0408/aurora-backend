@@ -1,7 +1,8 @@
-const { serviceToController } = require('../../helper/response.helper');
-const { logger } = require('../../utils/logger');
 const path = require('path');
 const fs = require('fs');
+const moment = require('moment');
+const { logger } = require('../../utils/logger');
+const { serviceToController } = require('../../helper/response.helper');
 
 const insertDataFunction = async (insertData) => {
   try {
@@ -28,7 +29,7 @@ const updateDataFunction = async (updateData) => {
     }
   } catch (error) {
     logger.error('======================== ERROR FROM updateDataFunction =======================');
-    logger.error(err);
+    logger.error(error);
     return serviceToController(4, [], 'internal server error');
   }
 };
@@ -43,13 +44,12 @@ const deleteDataFunction = async (deleteData) => {
     }
   } catch (error) {
     logger.error('======================== ERROR FROM DELETEDATAFUNCTION =======================');
-    logger.error(err);
+    logger.error(error);
     return serviceToController(4, [], 'internal server error');
   }
 };
 
 const checkExistsOrNotFunction = async (getSingleData) => {
-  console.log('getSingleData', getSingleData)
   try {
     const getSingleRecord = await getSingleData.Model.findOne({ where: getSingleData.condition });
 
@@ -59,9 +59,8 @@ const checkExistsOrNotFunction = async (getSingleData) => {
       return serviceToController(1, getSingleRecord, 'Data found successfully!');
     }
   } catch (error) {
-    console.log('error', error);
     logger.error('======================== ERROR FROM checkExistOrNotFunction =======================');
-    logger.error(err);
+    logger.error(error);
     return serviceToController(4, [], 'internal server error');
   }
 };
@@ -77,7 +76,7 @@ const findOneSequelizeDataFunction = async (data) => {
     }
   } catch (error) {
     logger.error('======================== ERROR FROM findOneSequelizeDataFunction =======================');
-    logger.error(err);
+    logger.error(error);
     return serviceToController(4, [], 'internal server error');
   }
 };
@@ -92,7 +91,7 @@ const getDataFunction = async (getData) => {
     }
   } catch (error) {
     logger.error('======================== ERROR FROM GETDATAFUNCTION =======================');
-    logger.error(err);
+    logger.error(error);
     return serviceToController(4, [], 'internal server error');
   }
 };
