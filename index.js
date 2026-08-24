@@ -1,6 +1,5 @@
 const fs = require('fs');
 const paths = require('path');
-const { env } = require('process');
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -32,8 +31,9 @@ app.use(bodyParser.json({ limit: '1024mb' }));
 
 // Routes
 const authenticationRoutes = require('./modules/authentication/authentication.routes');
+const adminUserRoutes = require('./modules/admin/users/user.route');
 
-app.use(authenticationRoutes);
+app.use(authenticationRoutes, adminUserRoutes);
 
 app.use(
   bodyParser.urlencoded({
@@ -52,7 +52,7 @@ app.listen(PORT, function (error) {
     console.log(`🚀 App Crashed ${error}`);
   } else {
     console.log('=================================');
-    console.log(`========== ENV: ${env} ===========`);
+    console.log(`========== ENV: ${process.env.NODE_ENV || 'production'} ===========`);
     console.log(`🚀 App listening on the port ${PORT}`);
     console.log('=================================');
   }
