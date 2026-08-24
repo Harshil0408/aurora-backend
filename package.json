@@ -14,11 +14,7 @@
     "start:production": "set NODE_ENV=production&& nodemon index.js",
     "lint": "eslint .",
     "lint-fix": "eslint --fix . --ext .js",
-    "lint-watch": "esw --watch src webpack.config.js",
-    "db:migrate": "npx sequelize-cli db:migrate",
-    "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "db:migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
-    "db:migrate:generate": "npx sequelize-cli migration:generate --name"
+    "lint-watch": "esw --watch src webpack.config.js"
   },
   "type": "commonjs",
   "dependencies": {
@@ -50,7 +46,6 @@
     "eslint-plugin-prettier": "^5.5.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-security": "^1.7.1",
-    "prettier": "^3.6.0",
-    "sequelize-cli": "^6.6.5"
+    "prettier": "^3.6.0"
   }
 }

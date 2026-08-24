@@ -1,13 +1,14 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { getModels } = require('../../models/index');
+const Models = require('../../models/index');
 const { checkExistsOrNotFunction, insertDataFunction, updateDataFunction } = require('../common/common.controller');
 const { serviceToController } = require('../../helper/response.helper');
 const { JWT_EXPIRES_AT, JWT_SECRET_KEY } = require('../../config/index');
 
+const { user: UserModel, userProfile: UserProfile } = Models;
+
 const userLoginService = async (userLoginData) => {
   try {
-    const { user: UserModel } = getModels();
     const isUserExists = await checkExistsOrNotFunction({
       Model: UserModel,
       condition: { email: userLoginData.bodyData.email },
@@ -51,8 +52,6 @@ const userLoginService = async (userLoginData) => {
 
 const userRegisterService = async (userRegisterData) => {
   try {
-    const { user: UserModel, userProfile: UserProfile } = getModels();
-
     const isUserExists = await checkExistsOrNotFunction({
       Model: UserModel,
       condition: { email: userRegisterData.bodyData.email },

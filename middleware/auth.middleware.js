@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET_KEY } = require('../config');
-const { getModels } = require('../models/index');
+const Models = require('../models/index');
 const ResponseHelper = require('../helper/response.helper');
 const { logger } = require('../utils/logger');
 
@@ -35,7 +35,7 @@ const authMiddleware = (roles = null) => {
         return ResponseHelper.invalidToken(res, 'Invalid or expired token.');
       }
 
-      const { user: UserModel } = getModels();
+      const { user: UserModel } = Models;
       const user = await UserModel.findOne({ where: { u_id: decoded.u_id } });
 
       if (!user) {

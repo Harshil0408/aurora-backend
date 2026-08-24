@@ -1,34 +1,34 @@
 const { Sequelize } = require('sequelize');
-const { DATABASE, DATABASEUSERNAMEPASSWORD, DATABASEUSERNAME, DATABASEHOST } = require('./config');
+const { DATABASE, DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, DATABASEHOST } = require('./config');
+const { logger } = require('./utils/logger');
 
 async function initializeDatabase() {
+  // Create a temporary Sequelize instance for connecting without a database
   const sequelize = new Sequelize('', DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, {
     host: DATABASEHOST,
     query: { raw: true },
     dialect: 'mysql',
     logging: false,
   });
+
   try {
+    // Create the database if it doesn't exist
     await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${DATABASE}\`;`);
   } catch (error) {
-    console.log('Unable to create database', error);
+    logger.error('Unable to create the database:', error);
   } finally {
+    // Close the temporary connection
     await sequelize.close();
   }
 }
 
-async function getDatabase() {
-  await initializeDatabase();
+// Initialize Sequelize with the actual database
+const database = new Sequelize(DATABASE, DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, {
+  host: DATABASEHOST,
+  query: { raw: true },
+  dialect: 'mysql',
+  logging: false,
+});
 
-  const database = new Sequelize(DATABASE, DATABASEUSERNAME, DATABASEUSERNAMEPASSWORD, {
-    host: DATABASEHOST,
-    query: { raw: true },
-    dialect: 'mysql',
-    logging: false,
-  });
-
-  console.log('Connection to the database has been established successfully.');
-  return database;
-}
-
-module.exports = getDatabase;
+initializeDatabase();
+module.exports = database;
