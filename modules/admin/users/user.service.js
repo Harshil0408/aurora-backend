@@ -27,7 +27,9 @@ const getUserForAdminService = async (reqData) => {
         model: UserProfile,
         as: 'userProfile',
         required: false,
+        attributes: ['user_id', 'last_name', 'phone', 'date_of_birth', 'created_at'],
       },
+      attributes: ['u_id', 'email', 'auth_token', 'role', 'is_active', 'is_verified', 'token', 'last_login_at'],
       raw: false,
     });
 
