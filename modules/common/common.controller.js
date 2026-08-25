@@ -6,7 +6,7 @@ const { serviceToController } = require('../../helper/response.helper');
 
 const insertDataFunction = async (insertData) => {
   try {
-    const insertRecord = await insertData.Model.create(insertData.data);
+    const insertRecord = await insertData.Model.create(insertData.data, { transaction: insertData.transaction });
     if (insertRecord === null) {
       return serviceToController(0, null, 'Data not inserted');
     } else {

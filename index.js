@@ -10,7 +10,10 @@ const { PORT } = require('./config');
 const sequelize = require('./database');
 
 // sequelize Models Sync
-sequelize.sync({ alter: true });
+sequelize
+  .sync()
+  .then(() => console.log('Database synced'))
+  .catch((error) => console.log(`Database sync failed: ${error.message}`));
 
 const app = express();
 

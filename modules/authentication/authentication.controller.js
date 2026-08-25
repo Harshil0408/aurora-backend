@@ -3,7 +3,7 @@ const { logger } = require('../../utils/logger');
 const { validateRequestBody } = require('../../utils/validation');
 const ResponseHelper = require('../../helper/response.helper');
 const { NODE_ENV } = require('../../config/index');
-const { userLoginService, userRegisterService } = require('./authentication.service');
+const { userLoginService, userRegisterService, registerSellerUserService } = require('./authentication.service');
 
 const userLoginController = async (req, res) => {
   try {
@@ -64,7 +64,50 @@ const registerUserController = async (req, res) => {
   }
 };
 
+const registerSellerUserController = async (req, res) => {
+  try {
+    const userRegisterData = {
+      bodyData: req.body,
+    };
+
+    const validObj = {
+      first_name: 'string',
+      last_name: 'string',
+      phone: 'string',
+      email: 'string',
+      store_name: 'string',
+      business_email: 'string',
+      business_phone: 'string',
+      gst_number: 'string',
+      pan_number: 'string',
+      bank_name: 'string',
+      bank_account_holder_name: 'string',
+      bank_account_number: 'string',
+      bank_ifsc_code: 'string',
+      address_line1: 'string',
+      city: 'string',
+      state: 'string',
+      country: 'string',
+      pincode: 'string',
+    };
+
+    const validation = validateRequestBody(userRegisterData.bodyData, validObj);
+
+    if (!validation.status) {
+      return ResponseHelper.badRequest(res, validation.description);
+    } else {
+      const data = await registerSellerUserService(userRegisterData);
+      return ResponseHelper.controllerToResponse(res, data);
+    }
+  } catch (error) {
+    logger.error('============ERROR FROM registerSellerUserController CONTROLLER============');
+    logger.error(error);
+    return ResponseHelper.internalServerError(res, 'Internal server error');
+  }
+};
+
 module.exports = {
   userLoginController,
   registerUserController,
+  registerSellerUserController,
 };
