@@ -1,68 +1,44 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const AdminUserModel = database.define(
-  'admin_users',
+const WishlistItemModel = database.define(
+  'wishlist_items',
   {
-    admin_id: {
+    wishlist_item_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    wishlist_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'wishlists',
+        key: 'wishlist_id',
       },
 
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-
-    admin_level: {
+    product_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      comment: '0 = moderator, 1 = admin, 2 = super_admin',
-    },
-
-    permissions: {
-      type: Sequelize.TEXT,
-      allowNull: true,
-      defaultValue: null,
-      comment: 'JSON array of granted permission keys',
-    },
-
-    created_by: {
-      type: Sequelize.INTEGER,
-      allowNull: true,
-      defaultValue: null,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'products',
+        key: 'product_id',
       },
 
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
     },
-
-    last_login_at: {
-      type: 'TIMESTAMP',
-      allowNull: true,
-      defaultValue: null,
-    },
-
     created_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       allowNull: false,
     },
-
     updated_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -70,9 +46,15 @@ const AdminUserModel = database.define(
     },
   },
   {
-    tableName: 'admin_users',
+    tableName: 'wishlist_items',
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['wishlist_id', 'product_id'],
+      },
+    ],
   }
 );
 
-module.exports = AdminUserModel;
+module.exports = WishlistItemModel;

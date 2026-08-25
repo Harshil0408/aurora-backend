@@ -1,68 +1,46 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const AdminUserModel = database.define(
-  'admin_users',
+const ProductImageModel = database.define(
+  'product_images',
   {
-    admin_id: {
+    image_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    product_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'products',
+        key: 'product_id',
       },
 
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-
-    admin_level: {
+    image_url: {
+      type: Sequelize.STRING(500),
+      allowNull: false,
+    },
+    alt_text: {
+      type: Sequelize.STRING(255),
+      allowNull: true,
+      defaultValue: null,
+    },
+    sort_order: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      comment: '0 = moderator, 1 = admin, 2 = super_admin',
+      defaultValue: 0,
     },
-
-    permissions: {
-      type: Sequelize.TEXT,
-      allowNull: true,
-      defaultValue: null,
-      comment: 'JSON array of granted permission keys',
-    },
-
-    created_by: {
-      type: Sequelize.INTEGER,
-      allowNull: true,
-      defaultValue: null,
-
-      references: {
-        model: 'users',
-        key: 'u_id',
-      },
-
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    },
-
-    last_login_at: {
-      type: 'TIMESTAMP',
-      allowNull: true,
-      defaultValue: null,
-    },
-
     created_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       allowNull: false,
     },
-
     updated_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -70,9 +48,9 @@ const AdminUserModel = database.define(
     },
   },
   {
-    tableName: 'admin_users',
+    tableName: 'product_images',
     timestamps: false,
   }
 );
 
-module.exports = AdminUserModel;
+module.exports = ProductImageModel;

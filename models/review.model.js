@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const UserProfileModel = database.define(
-  'user_profile',
+const ReviewModel = database.define(
+  'reviews',
   {
-    profile_id: {
+    review_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -13,7 +13,6 @@ const UserProfileModel = database.define(
     user_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
 
       references: {
         model: 'users',
@@ -23,47 +22,48 @@ const UserProfileModel = database.define(
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    first_name: {
-      type: Sequelize.STRING(50),
-      allowNull: true,
-      defaultValue: null,
-    },
-    last_name: {
-      type: Sequelize.STRING(50),
-      allowNull: true,
-      defaultValue: null,
-    },
-    phone: {
-      type: Sequelize.STRING(20),
-      allowNull: false,
-      unique: true,
-    },
-    alternate_phone: {
-      type: Sequelize.STRING(20),
-      allowNull: true,
-      defaultValue: null,
-    },
-    avatar_url: {
-      type: Sequelize.STRING(500),
-      allowNull: true,
-      defaultValue: null,
-    },
-    gender: {
+    product_id: {
       type: Sequelize.INTEGER,
+      allowNull: false,
+
+      references: {
+        model: 'products',
+        key: 'product_id',
+      },
+
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+    rating: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+      comment: '1 to 5 stars',
+    },
+    title: {
+      type: Sequelize.STRING(200),
       allowNull: true,
       defaultValue: null,
-      comment: '0 = male, 1 = female, 2 = other',
     },
-    date_of_birth: {
-      type: Sequelize.DATEONLY,
+    comment: {
+      type: Sequelize.STRING(2000),
       allowNull: true,
       defaultValue: null,
     },
-    is_deleted: {
+    is_verified_purchase: {
       type: Sequelize.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: '0 = not deleted, 1 = deleted',
+      comment: '0 = no, 1 = yes',
+    },
+    is_approved: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+      comment: '0 = pending moderation, 1 = approved',
     },
     created_at: {
       type: 'TIMESTAMP',
@@ -77,9 +77,15 @@ const UserProfileModel = database.define(
     },
   },
   {
-    tableName: 'user_profile',
+    tableName: 'reviews',
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['user_id', 'product_id'],
+      },
+    ],
   }
 );
 
-module.exports = UserProfileModel;
+module.exports = ReviewModel;

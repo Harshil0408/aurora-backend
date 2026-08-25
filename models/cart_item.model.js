@@ -1,68 +1,67 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const AdminUserModel = database.define(
-  'admin_users',
+const CartItemModel = database.define(
+  'cart_items',
   {
-    admin_id: {
+    cart_item_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    cart_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'carts',
+        key: 'cart_id',
       },
 
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-
-    admin_level: {
+    product_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      comment: '0 = moderator, 1 = admin, 2 = super_admin',
-    },
 
-    permissions: {
-      type: Sequelize.TEXT,
-      allowNull: true,
-      defaultValue: null,
-      comment: 'JSON array of granted permission keys',
-    },
+      references: {
+        model: 'products',
+        key: 'product_id',
+      },
 
-    created_by: {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+    variant_id: {
       type: Sequelize.INTEGER,
       allowNull: true,
       defaultValue: null,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'product_variants',
+        key: 'variant_id',
       },
 
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
-
-    last_login_at: {
-      type: 'TIMESTAMP',
-      allowNull: true,
-      defaultValue: null,
+    quantity: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
     },
-
+    price_at_add: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: false,
+      comment: 'Unit price captured when item was added',
+    },
     created_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       allowNull: false,
     },
-
     updated_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -70,9 +69,9 @@ const AdminUserModel = database.define(
     },
   },
   {
-    tableName: 'admin_users',
+    tableName: 'cart_items',
     timestamps: false,
   }
 );
 
-module.exports = AdminUserModel;
+module.exports = CartItemModel;

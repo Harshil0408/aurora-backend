@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const UserProfileModel = database.define(
-  'user_profile',
+const AddressModel = database.define(
+  'addresses',
   {
-    profile_id: {
+    address_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -13,7 +13,6 @@ const UserProfileModel = database.define(
     user_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
 
       references: {
         model: 'users',
@@ -23,47 +22,61 @@ const UserProfileModel = database.define(
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    first_name: {
-      type: Sequelize.STRING(50),
-      allowNull: true,
-      defaultValue: null,
+    address_type: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: '0 = home, 1 = work, 2 = other',
     },
-    last_name: {
-      type: Sequelize.STRING(50),
-      allowNull: true,
-      defaultValue: null,
+    receiver_name: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
     },
     phone: {
       type: Sequelize.STRING(20),
       allowNull: false,
-      unique: true,
     },
     alternate_phone: {
       type: Sequelize.STRING(20),
       allowNull: true,
       defaultValue: null,
     },
-    avatar_url: {
-      type: Sequelize.STRING(500),
+    address_line1: {
+      type: Sequelize.STRING(255),
+      allowNull: false,
+    },
+    address_line2: {
+      type: Sequelize.STRING(255),
       allowNull: true,
       defaultValue: null,
     },
-    gender: {
-      type: Sequelize.INTEGER,
-      allowNull: true,
-      defaultValue: null,
-      comment: '0 = male, 1 = female, 2 = other',
-    },
-    date_of_birth: {
-      type: Sequelize.DATEONLY,
+    landmark: {
+      type: Sequelize.STRING(255),
       allowNull: true,
       defaultValue: null,
     },
-    is_deleted: {
+    city: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
+    },
+    state: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
+    },
+    country: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
+      defaultValue: 'India',
+    },
+    pincode: {
+      type: Sequelize.STRING(20),
+      allowNull: false,
+    },
+    is_default: {
       type: Sequelize.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      comment: '0 = not deleted, 1 = deleted',
+      comment: '0 = normal, 1 = default address',
     },
     created_at: {
       type: 'TIMESTAMP',
@@ -77,9 +90,9 @@ const UserProfileModel = database.define(
     },
   },
   {
-    tableName: 'user_profile',
+    tableName: 'addresses',
     timestamps: false,
   }
 );
 
-module.exports = UserProfileModel;
+module.exports = AddressModel;

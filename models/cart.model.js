@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
 const database = require('../database');
 
-const AdminUserModel = database.define(
-  'admin_users',
+const CartModel = database.define(
+  'carts',
   {
-    admin_id: {
+    cart_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -23,46 +23,24 @@ const AdminUserModel = database.define(
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-
-    admin_level: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      comment: '0 = moderator, 1 = admin, 2 = super_admin',
-    },
-
-    permissions: {
-      type: Sequelize.TEXT,
-      allowNull: true,
-      defaultValue: null,
-      comment: 'JSON array of granted permission keys',
-    },
-
-    created_by: {
+    coupon_id: {
       type: Sequelize.INTEGER,
       allowNull: true,
       defaultValue: null,
 
       references: {
-        model: 'users',
-        key: 'u_id',
+        model: 'coupons',
+        key: 'coupon_id',
       },
 
-      onUpdate: 'CASCADE',
+      onUpdate: 'SET NULL',
       onDelete: 'SET NULL',
     },
-
-    last_login_at: {
-      type: 'TIMESTAMP',
-      allowNull: true,
-      defaultValue: null,
-    },
-
     created_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       allowNull: false,
     },
-
     updated_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -70,9 +48,9 @@ const AdminUserModel = database.define(
     },
   },
   {
-    tableName: 'admin_users',
+    tableName: 'carts',
     timestamps: false,
   }
 );
 
-module.exports = AdminUserModel;
+module.exports = CartModel;
