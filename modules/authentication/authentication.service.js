@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const database = require('../../database');
 const Models = require('../../models/index');
-const { checkExistsOrNotFunction, insertDataFunction, updateDataFunction } = require('../common/common.controller');
+const { checkExistsOrNotFunction, insertDataFunction, updateDataFunction, findOneSequelizeDataFunction } = require('../common/common.controller');
 const { serviceToController } = require('../../helper/response.helper');
 const { JWT_EXPIRES_AT, JWT_SECRET_KEY } = require('../../config/index');
 const { generateSlug } = require('../../utils/utils');
@@ -48,6 +48,59 @@ const userLoginService = async (userLoginData) => {
 
     return serviceToController(1, user, 'Login successful!');
   } catch (error) {
+    return serviceToController(4, null, 'Internal server error');
+  }
+};
+
+const sellerLoginService = async (userLoginData) => {
+  try {
+    const isUserExists = await checkExistsOrNotFunction({
+      Model: UserModel,
+      condition: { email: userLoginData.bodyData.email },
+    });
+
+    if (isUserExists.status === 0) {
+      return serviceToController(0, null, 'Invalid email or password');
+    }
+
+    const user = isUserExists.data;
+
+    if (user.role !== 1) {
+      return serviceToController(0, null, 'This account is not a seller');
+    }
+
+    const isPasswordMatch = await bcrypt.compare(userLoginData.bodyData.password, user.password_hash);
+
+    if (!isPasswordMatch) {
+      return serviceToController(0, null, 'Invalid email or password');
+    }
+
+    const payload = {
+      u_id: user.u_id,
+      email: user.email,
+      role: user.role,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: JWT_EXPIRES_AT });
+
+    await updateDataFunction({
+      Model: UserModel,
+      condition: { u_id: user.u_id },
+      data: { token, last_login_at: new Date().toISOString() },
+    });
+
+    const sellerData = await findOneSequelizeDataFunction({
+      Model: SellerUserModel,
+      condition: { user_id: user.u_id },
+    });
+
+    delete user.password_hash;
+
+    const finalData = { ...user, sellerData: sellerData.data };
+
+    return serviceToController(1, finalData, 'Seller login successful!');
+  } catch (error) {
+    console.error('sellerLoginService error:', error);
     return serviceToController(4, null, 'Internal server error');
   }
 };
@@ -169,4 +222,5 @@ module.exports = {
   userLoginService,
   userRegisterService,
   registerSellerUserService,
+  sellerLoginService,
 };

@@ -3,7 +3,7 @@ const { logger } = require('../../utils/logger');
 const { validateRequestBody } = require('../../utils/validation');
 const ResponseHelper = require('../../helper/response.helper');
 const { NODE_ENV } = require('../../config/index');
-const { userLoginService, userRegisterService, registerSellerUserService } = require('./authentication.service');
+const { userLoginService, userRegisterService, registerSellerUserService, sellerLoginService } = require('./authentication.service');
 
 const userLoginController = async (req, res) => {
   try {
@@ -18,6 +18,37 @@ const userLoginController = async (req, res) => {
 
     if (validation.status) {
       const data = await userLoginService(userLoginData);
+      if (data.status === 1 && data.data && data.data.token) {
+        res.cookie('accessToken', data.data.token, {
+          httpOnly: true,
+          secure: NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+      }
+      return ResponseHelper.controllerToResponse(res, data);
+    } else {
+      return ResponseHelper.badRequest(res, null, validation.description);
+    }
+  } catch (error) {
+    logger.error('============ERROR FROM userLoginController CONTROLLER============');
+    logger.error(error);
+    return ResponseHelper.internalServerError(res, 'Internal server error');
+  }
+};
+const sellerLoginController = async (req, res) => {
+  try {
+    const sellerLoginData = { bodyData: req.body };
+
+    const validObj = {
+      email: 'string',
+      password: 'string',
+    };
+
+    const validation = validateRequestBody(sellerLoginData.bodyData, validObj);
+
+    if (validation.status) {
+      const data = await sellerLoginService(sellerLoginData);
       if (data.status === 1 && data.data && data.data.token) {
         res.cookie('accessToken', data.data.token, {
           httpOnly: true,
@@ -110,4 +141,5 @@ module.exports = {
   userLoginController,
   registerUserController,
   registerSellerUserController,
+  sellerLoginController,
 };
