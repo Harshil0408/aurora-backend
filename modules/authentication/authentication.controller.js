@@ -28,7 +28,7 @@ const userLoginController = async (req, res) => {
       }
       return ResponseHelper.controllerToResponse(res, data);
     } else {
-      return ResponseHelper.badRequest(res, validation.description);
+      return ResponseHelper.badRequest(res, null, validation.description);
     }
   } catch (error) {
     logger.error('============ERROR FROM userLoginController CONTROLLER============');
